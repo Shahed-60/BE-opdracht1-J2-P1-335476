@@ -44,4 +44,8 @@ class Database
         $this->statement->execute();
         return $this->statement->fetch(PDO::FETCH_OBJ);
     }
+    public function bind($param, $value)
+    {
+        $this->statement->binValue($param, $value);
+    }
 }

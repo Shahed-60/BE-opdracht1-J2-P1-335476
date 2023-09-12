@@ -40,6 +40,8 @@
             <th>Bouwjaar</th>
             <th>Brandstof</th>
             <th>RijbewijsCategorie</th>
+            <th>wijzigen</th>
+
         </thead>
         <tbody>
             <?= $data['tableRows']; ?>

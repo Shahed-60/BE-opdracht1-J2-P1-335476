@@ -19,6 +19,14 @@ class Instructeur extends BaseController
             /**
              * Datum in het juiste formaat gezet
              */
+            /**
+             * Haal alle instructeurs op uit de database (model)
+             */
+            $instructeurs = $this->instructeurModel->getInstructeurs();
+
+            $aantalInstructeurs = sizeof($instructeurs);
+
+
             $date = date_create($instructeur->DatumInDienst);
             $formatted_date = date_format($date, 'd-m-Y');
 
@@ -28,28 +36,32 @@ class Instructeur extends BaseController
                         <td>$instructeur->Achternaam</td>
                         <td>$instructeur->Mobiel</td>
                         <td>$formatted_date</td>            
-                        <td>$instructeur->AantalSterren</td>            
+                        <td>$instructeur->AantalSterren</td>  
+
+                                  
                         <td>
                             <a href='" . URLROOT . "/instructeur/overzichtvoertuigen/$instructeur->Id'>
                                 <i class='bi bi-car-front'></i>
                             </a>
-                        </td>            
+                        </td> 
+                       
+
                       </tr>";
         }
 
         $data = [
             'title' => 'Instructeurs in dienst',
-            'aantalInstructeurs' => 'Aantal instructeurs:',
+            'aantalInstructeurs' => $aantalInstructeurs,
             'rows' => $rows
         ];
 
         $this->view('Instructeur/overzichtinstructeur', $data);
     }
 
-    public function overzichtVoertuigen($Id)
+    public function overzichtVoertuigen($instructeurId)
     {
 
-        $instructeurInfo = $this->instructeurModel->getInstructeurById($Id);
+        $instructeurInfo = $this->instructeurModel->getInstructeurById($instructeurId);
 
         // var_dump($instructeurInfo);
         $naam = $instructeurInfo->Voornaam . " " . $instructeurInfo->Tussenvoegsel . " " . $instructeurInfo->Achternaam;
@@ -59,7 +71,7 @@ class Instructeur extends BaseController
         /**
          * We laten de model alle gegevens ophalen uit de database
          */
-        $result = $this->instructeurModel->getToegewezenVoertuigen($Id);
+        $result = $this->instructeurModel->getToegewezenVoertuigen($instructeurId);
 
 
         $tableRows = "";
@@ -85,14 +97,18 @@ class Instructeur extends BaseController
                 $date_formatted = date_format(date_create($voertuig->Bouwjaar), 'd-m-Y');
 
                 $tableRows .= "<tr>
-                <td>$voertuig->Id</td>
-
+                                    <td>$voertuig->Id</td>
                                     <td>$voertuig->TypeVoertuig</td>
                                     <td>$voertuig->Type</td>
                                     <td>$voertuig->Kenteken</td>
                                     <td>$date_formatted</td>
                                     <td>$voertuig->Brandstof</td>
-                                    <td>$voertuig->RijbewijsCategorie</td>            
+                                    <td>$voertuig->RijbewijsCategorie</td>   
+                                    <td>
+                                    <a href='" . URLROOT . "/instructeur/updateVoertuig/$voertuig->Id/$instructeurId'>
+                                    <img src = '/public/img/b_edit.png'>
+                                    </a> 
+                                    </td>      
                             </tr>";
             }
         }
@@ -107,5 +123,21 @@ class Instructeur extends BaseController
         ];
 
         $this->view('Instructeur/overzichtVoertuigen', $data);
+    }
+
+    function updateVoertuig($Id, $instructeurId)
+    {
+
+        $voertuigInfo = $this->instructeurModel->getToegewezenVoertuig($Id, $instructeurId);
+
+        $data = [
+            'title' => 'Update Voertuig',
+            'voertuigId' => $Id,
+            'instructeurId' => $instructeurId,
+            'voertuigInfo' => $voertuigInfo
+
+        ];
+
+        $this->view('Instructeur/updateVoertuig', $data);
     }
 }

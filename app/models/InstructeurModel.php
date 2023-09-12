@@ -53,6 +53,34 @@ class InstructeurModel
         $this->db->query($sql);
         return $this->db->resultSet();
     }
+    public function getToegewezenVoertuig($Id, $instructeurId)
+    {
+        $sql = "SELECT      
+                            VOER.Id
+                            ,VOER.Type
+                            ,VOER.Kenteken
+                            ,VOER.Bouwjaar
+                            ,VOER.Brandstof
+                            ,TYVO.TypeVoertuig
+                            ,TYVO.RijbewijsCategorie
+
+                FROM        Voertuig    AS  VOER
+                
+                INNER JOIN  TypeVoertuig AS TYVO
+
+                ON          TYVO.Id = VOER.TypeVoertuigId
+                
+                INNER JOIN  VoertuigInstructeur AS VOIN
+                
+                ON          VOIN.VoertuigId = VOER.Id
+                
+                WHERE       VOIN.InstructeurId = $instructeurId AND VOER.Id = $Id
+                
+                ORDER BY    TYVO.RijbewijsCategorie DESC";
+
+        $this->db->query($sql);
+        return $this->db->resultSet();
+    }
 
     public function getInstructeurById($Id)
     {
@@ -68,14 +96,14 @@ class InstructeurModel
 
         return $this->db->single();
     }
-    // sql statment om het aantal te laten zien met behulp van count
-    public function getAantalInstructeurs($Id)
-    {
-        $sql = "SELECT COUNT(*) as aantal 
-                FROM Instructeurs
-                WHERE Id = $Id";
-        $this->db->query($sql);
 
-        return $this->db->aantalInstructeurs();
+    function updateVoertuig($id)
+    {
+        $sql = "UPDATE Voertuig SET Type = :type, Brandstof = :brandstof, Kenteken = :kenteken WHERE Id = $id";
+        $this->db->query($sql);
+        $this->db->bind(':type', $_POST['type']);
+        $this->db->bind(':brandstof', $_POST['brandstof']);
+        $this->db->bind(':kenteken', $_POST['kenteken']);
+        return $this->db->resultSet();
     }
 }

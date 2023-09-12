@@ -14,8 +14,7 @@
 
 <body>
     <u><?= $data['title']; ?></u>
-    <p><?= $data['aantalInstructeurs']; ?></p>
-
+    <h6>Aantal Instructeurs: <?= $data['aantalInstructeurs']; ?></h6>
     <table>
         <thead>
             <th>Voornaam</th>
