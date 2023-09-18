@@ -57,10 +57,10 @@ class InstructeurModel
     {
         $sql = "SELECT      
                             VOER.Id
-                            ,VOER.Type
-                            ,VOER.Kenteken
+                            -- ,VOER.Type
+                            -- ,VOER.Kenteken
                             ,VOER.Bouwjaar
-                            ,VOER.Brandstof
+                            -- ,VOER.Brandstof
                             ,TYVO.TypeVoertuig
                             ,TYVO.RijbewijsCategorie
 
