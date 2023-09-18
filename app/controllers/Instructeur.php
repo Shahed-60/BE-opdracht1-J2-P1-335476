@@ -68,6 +68,8 @@ class Instructeur extends BaseController
         $datumInDienst = $instructeurInfo->DatumInDienst;
         $aantalSterren = $instructeurInfo->AantalSterren;
 
+        $toevoegen = "<a href='" . URLROOT . "/instructeur/overzichtNietToegewezenVoertuigen/$instructeurId'>Toevoegen Voertuig</a>";
+
         /**
          * We laten de model alle gegevens ophalen uit de database
          */
@@ -97,19 +99,22 @@ class Instructeur extends BaseController
                 $date_formatted = date_format(date_create($voertuig->Bouwjaar), 'd-m-Y');
 
                 $tableRows .= "<tr>
-                                    <td>$voertuig->Id</td>
+
+                                    <td>$voertuig->Id</td>              
                                     <td>$voertuig->TypeVoertuig</td>
                                     <td>$voertuig->Type</td>
                                     <td>$voertuig->Kenteken</td>
                                     <td>$date_formatted</td>
                                     <td>$voertuig->Brandstof</td>
-                                    <td>$voertuig->RijbewijsCategorie</td>   
-                                    <td>
-                                    <a href='" . URLROOT . "/instructeur/updateVoertuig/$voertuig->Id/$instructeurId'>
+                                    <td>$voertuig->RijbewijsCategorie</td>
+                <td>
+                <a href='" . URLROOT . "/instructeur/updateVoertuig/$voertuig->Id/$instructeurId'>
                                     <img src = '/public/img/b_edit.png'>
                                     </a> 
-                                    </td>      
-                            </tr>";
+               </td>
+
+                
+        </tr>";
             }
         }
 
@@ -119,7 +124,8 @@ class Instructeur extends BaseController
             'tableRows' => $tableRows,
             'naam'      => $naam,
             'datumInDienst' => $datumInDienst,
-            'aantalSterren' => $aantalSterren
+            'aantalSterren' => $aantalSterren,
+            'toevoegen' => $toevoegen
         ];
 
         $this->view('Instructeur/overzichtVoertuigen', $data);
@@ -129,15 +135,118 @@ class Instructeur extends BaseController
     {
 
         $voertuigInfo = $this->instructeurModel->getToegewezenVoertuig($Id, $instructeurId);
+        $instructeurs = $this->instructeurModel->getInstructeurs();
 
         $data = [
             'title' => 'Update Voertuig',
             'voertuigId' => $Id,
             'instructeurId' => $instructeurId,
-            'voertuigInfo' => $voertuigInfo
+            'voertuigInfo' => $voertuigInfo,
+            'instructeurs' => $instructeurs
 
         ];
 
         $this->view('Instructeur/updateVoertuig', $data);
+    }
+    // aan scenario 2 werken
+    // function updateInstructeur($Id)
+    // {
+    //     $instructeurData = $this->instructeurModel->getToegewezenVoertuig($Id);
+    //     $data = [
+    //         'instructeurData' => $instructeurData
+
+    //     ];
+    // }
+    function updateVoertuigSave($instructeurId, $voertuigId)
+    {
+        $this->instructeurModel->updateVoertuig($voertuigId);
+        $this->instructeurModel->updateInstructeur($voertuigId);
+        $this->instructeurModel->updateNietToegewezenInstructeur($voertuigId);
+
+
+        $this->overzichtVoertuigen($instructeurId);
+    }
+
+    function overzichtNietToegewezenVoertuigen($instructeurId)
+    {
+
+
+        $nietToegewezenVoertuigen = $this->instructeurModel->getNietToegewezenVoertuigen();
+        $instructeurInfo = $this->instructeurModel->getInstructeurById($instructeurId);
+        // $voertuigId = $this->instructeurModel->getVoertuigId();
+
+        $naam = $instructeurInfo->Voornaam . " " . $instructeurInfo->Tussenvoegsel . " " . $instructeurInfo->Achternaam;
+        $datumInDienst = $instructeurInfo->DatumInDienst;
+        $aantalSterren = $instructeurInfo->AantalSterren;
+
+        $tableRows = "";
+        if (empty($nietToegewezenVoertuigen)) {
+
+            $tableRows = "<tr>
+                            <td colspan='6'>
+                                Er zijn op dit moment nog geen beschikbare voertuigen
+                            </td>
+                          </tr>";
+        } else {
+
+            foreach ($nietToegewezenVoertuigen as $voertuig) {
+
+
+                $date_formatted = date_format(date_create($voertuig->Bouwjaar), 'd-m-Y');
+
+                $tableRows .= "<tr>
+                                  
+                                    <td>$voertuig->TypeVoertuig</td>
+                                    <td>$voertuig->Type</td>
+                                    <td>$voertuig->Kenteken</td>
+                                    <td>$date_formatted</td>
+                                    <td>$voertuig->Brandstof</td>
+                                    <td>$voertuig->RijbewijsCategorie</td>
+                                    <td>
+                                    <a href='" . URLROOT . "/instructeur/toevoegenInstructeur/$instructeurId/$voertuig->Id'>
+                                    <img src = '/public/img/plus.png'>
+                                   </a> 
+                                   </td>
+
+                                    <td>
+                                     <a href='" . URLROOT . "/instructeur/updateNietToegewezenVoertuig/$instructeurId/$voertuig->Id'>
+                                    <img src = '/public/img/b_edit.png'>
+                                    </a> 
+                                    </td>
+
+                                    
+                            </tr>";
+            }
+        }
+
+
+        $data = [
+            'title' => 'Alle beschikbare voertuigen',
+            'nietToegewezenVoertuigen' => $nietToegewezenVoertuigen,
+            'tableRows' => $tableRows,
+            'naam'      => $naam,
+            'datumInDienst' => $datumInDienst,
+            'aantalSterren' => $aantalSterren
+        ];
+
+
+
+        $this->view('Instructeur/overzichtNietToegewezenVoertuig', $data);
+    }
+
+
+    function updateNietToegewezenVoertuig($instructeurId, $voertuigId)
+    {
+        $voertuigInfo = $this->instructeurModel->getNietToegewezenVoertuig($voertuigId);
+
+        $data = [
+            'title' => 'Update Voertuig',
+            'voertuigId' => $voertuigId,
+            'instructeurId' => $instructeurId,
+            'voertuigInfo' => $voertuigInfo
+
+        ];
+
+        $this->view('Instructeur/UpdateVoertuig', $data);
     }
 }

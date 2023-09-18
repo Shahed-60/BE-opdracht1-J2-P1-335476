@@ -46,6 +46,6 @@ class Database
     }
     public function bind($param, $value)
     {
-        $this->statement->binValue($param, $value);
+        $this->statement->bindValue($param, $value);
     }
 }
