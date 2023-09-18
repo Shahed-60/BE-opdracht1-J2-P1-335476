@@ -167,7 +167,7 @@ class Instructeur extends BaseController
         $this->overzichtVoertuigen($instructeurId);
     }
 
-    // function overzichtNietToegewezenVoertuigen($instructeurId)
+    function overzichtNietToegewezenVoertuigen($instructeurId)
     {
 
 
