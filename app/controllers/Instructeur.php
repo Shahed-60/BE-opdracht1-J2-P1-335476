@@ -174,11 +174,11 @@ class Instructeur extends BaseController
         $nietToegewezenVoertuigen = $this->instructeurModel->getNietToegewezenVoertuigen();
         $instructeurInfo = $this->instructeurModel->getInstructeurById($instructeurId);
         // $voertuigId = $this->instructeurModel->getVoertuigId();
-
+        // 
         $naam = $instructeurInfo->Voornaam . " " . $instructeurInfo->Tussenvoegsel . " " . $instructeurInfo->Achternaam;
         $datumInDienst = $instructeurInfo->DatumInDienst;
         $aantalSterren = $instructeurInfo->AantalSterren;
-
+        // 
         $tableRows = "";
         if (empty($nietToegewezenVoertuigen)) {
 
