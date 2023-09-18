@@ -12,7 +12,7 @@
     <?php
     // echo $data['title'];
     // var_dump($data['voertuigInfo']);
-    var_dump($data['voertuigInfo'][0]->Brandstof);
+    // var_dump($data['voertuigInfo'][0]->Brandstof);
     // 
     ?>
     <!-- <?php
