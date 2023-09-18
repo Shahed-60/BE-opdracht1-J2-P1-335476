@@ -119,7 +119,7 @@ class InstructeurModel
         $this->db->bind(':type', $_POST['type']);
         $this->db->bind(':brandstof', $_POST['brandstof']);
         $this->db->bind(':kenteken', $_POST['kenteken']);
-        // $this->db->bind(':bouwjaar', $_POST['bouwjaar']);
+        $this->db->bind(':bouwjaar', $_POST['bouwjaar']);
         $this->db->bind(':typevoertuig', $_POST['typevoertuig']);
         return $this->db->resultSet();
     }
